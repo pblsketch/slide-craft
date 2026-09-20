@@ -1,0 +1,4 @@
+interface:
+  display_name: "Slide Craft"
+  short_description: "내용과 청중에 맞춰 다양한 시각 스타일의 편집 가능한 HTML 슬라이드 제작"
+  default_prompt: "$slide-craft로 내 목적에 맞는 슬라이드를 만들고 브라우저에서 편집·발표·저장할 수 있게 해 줘."
