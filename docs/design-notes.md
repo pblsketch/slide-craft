@@ -13,3 +13,7 @@ The examples are newly authored HTML/CSS. Reference source code and worksheet pa
 Editorial places source material beside the comparison task. Notebook uses a specimen diagram and dotted drawing region. Soft Grid uses a distinct title rhythm and paired revision spaces. Graph Paper includes a fraction, calculated points and a blank plane at the same scale. Slide examples use a stronger type scale, saturated cover, clearer chart hierarchy and large quotation treatment.
 
 The examples embed unmodified Pretendard Variable v1.3.9 from [the official repository](https://github.com/orioncactus/pretendard). Font copyright and SIL OFL are included inside every HTML file and in Pretendard-OFL.txt. The font is not part of the MIT license on the authored code. No font is required for new user documents.
+
+## Additional compositions
+
+Monochrome Ledger uses paired arguments and black/grey typography. Playful Geometry uses labelled shapes as the actual activity material and a large sorting region. Duotone Split compares concepts across two contrasting fields. Editorial Magazine pairs asymmetrical typography with a relevant speech-bubble illustration. These are design directions, not mandatory templates.

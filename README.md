@@ -51,6 +51,32 @@
 [3장 전체 HTML](examples/warm-minimal.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/warm-minimal.html)
 
 HTML 링크에서 코드가 보이면 파일 화면의 다운로드 버튼 또는 **HTML 바로 내려받기**로 저장한 뒤 브라우저에서 여세요. 예시는 각 3장이며, 실제 발표의 장 수와 화면 비율은 요청에 맞게 바꿀 수 있습니다.
+
+### Duotone Split · 두 색의 큰 면으로 만드는 대비
+
+크림색과 남색 면을 절반씩 나눠 두 개념을 나란히 보여 줍니다. 큰 번호와 짧은 문구로 대비를 만들고, 마무리는 한 가지 배경색으로 전환합니다.
+
+![Duotone Split: 사실과 해석을 구분하는 3장 수업 자료](docs/images/duotone-split.png)
+
+예시: **사실과 해석을 구분하는 3장 수업 자료**. 같은 디자인 방향을 다른 주제나 교과에도 적용할 수 있습니다.
+
+> “Duotone Split 스타일로 만들어 줘. 크림색과 남색을 크게 나누고, 두 관점을 서로 마주 보는 구도로 배치해 줘.”
+
+[편집 가능한 HTML](examples/duotone-split.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/duotone-split.html)
+
+
+### Editorial Magazine · 비대칭 배치와 삽화가 있는 잡지형 구성
+
+큰 제목과 말풍선 삽화를 비대칭으로 배치합니다. 종이색 바탕과 벽돌색 포인트를 공유하면서 비교 장면과 실습 장면의 구도를 달리합니다.
+
+![Editorial Magazine: 질문을 바꾸며 대화의 방향을 살펴보는 3장 자료](docs/images/editorial-magazine.png)
+
+예시: **질문을 바꾸며 대화의 방향을 살펴보는 3장 자료**. 같은 디자인 방향을 다른 주제나 교과에도 적용할 수 있습니다.
+
+> “Editorial Magazine 스타일로 만들어 줘. 큰 제목 옆에 내용과 연결되는 삽화를 넣고, 여백을 살려 잡지처럼 구성해 줘.”
+
+[편집 가능한 HTML](examples/editorial-magazine.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/editorial-magazine.html)
+
 ## 처음 사용하기
 
 ### 1. 사용하는 AI에 스킬 설치하기
