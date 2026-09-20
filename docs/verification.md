@@ -26,3 +26,7 @@ Two new examples in this repository passed browser edit, structure change, undo,
 ## v0.4.0 reference gallery, checked on 2026-09-20
 
 Six new examples in this repository were verified in Chrome over HTTP for editing, structure change, undo, saving/reopening, no external resource requests and PDF page counts. Across the two repositories, 12 targeted tests passed (11 prior examples deselected). The Cobalt Grid worksheet also checks formula source and calculated points. The Notebook Tabs worksheet checks navigation to the third activity; its final stage-label presentation was rechecked after the visual adjustment. Worksheets produce one A4 page each; slide decks produce three 16:9 pages each. Prior examples were preserved without rerunning the old engine suite. Claude ZIP extraction and bundled helper execution were verified.
+
+## v0.4.1 shared editor correction, checked on 2026-09-21
+
+The empty editable-field fallback now has zero selector specificity so authored minimum heights are preserved. Shared editor integration tests: 10 passed, including empty-region edit/preview preservation and scaled slide interactions. No slide design or lesson content changed.

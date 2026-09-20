@@ -34,7 +34,7 @@
 [data-teach-controls] [data-msg]:empty{display:block}
 [data-teach-controls] [data-table-note]:empty{display:none}
 [data-edit][contenteditable=true]:focus{outline:1px dashed #397a61;outline-offset:3px}
-[data-edit][contenteditable=true]:empty{min-width:1em;min-height:1em}
+:where([data-edit][contenteditable=true]:empty){min-width:1em;min-height:1em}
 .teach-selected{outline:1px dashed #80a18d;outline-offset:4px}
 [data-teach-overlay]{position:fixed;z-index:99999;pointer-events:none;border:1px solid #4e866b;box-sizing:border-box}
 [data-teach-overlay] button{pointer-events:auto;position:absolute;font:11px/1.2 '맑은 고딕',sans-serif;min-width:24px;min-height:24px;border:1px solid #285c49;border-radius:5px;background:#285c49;color:white;touch-action:none;user-select:none}
