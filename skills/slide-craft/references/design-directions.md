@@ -35,3 +35,16 @@
 화면 비율과 크기는 상황에 맞게 정한다. HTML의 `aspect-ratio`, 그리드, 비례 축소 등을 적절히 사용하되 좁은 화면에서 텍스트가 겹치거나 사라지지 않는지 확인한다. 발표 보기는 도구 모음의 ‘발표 보기’와 장 이동을 활용할 수 있다.
 
 PDF가 필요할 때만 페이지 크기와 장별 쪽 나눔을 정한다. 인쇄 때 편집 도구는 사라지지만 내용은 모두 남아야 한다. ‘교사용’이나 ‘배포 금지’ 표시를 자동으로 붙이지 않는다.
+
+## Additional reference directions
+
+| Style | Visual grammar | Adaptation |
+|---|---|---|
+| Pin & Paper | Yellow paper, ink blue, loose memo placement | Use notes as real observation or response areas; omit ornamental pins and binder holes. |
+| Cobalt Grid | Cobalt typography, precise grid, editorial hierarchy | Use actual mathematical grids and calculated coordinates; omit pixel ornaments and accent rules. |
+| Grove | Forest green, cream, classical serif hierarchy | Keep worksheet writing areas light; mix dark and light presentation scenes. |
+| Notebook Tabs | Paper page, coloured section tabs | Label actual sections; make screen tabs navigate when appropriate. |
+| Retro Zine | Beige paper, saturated green, oversized print-like type | Vary source, headline and draft space; preserve readability and actual response space. |
+| Sakura Chroma | Cream paper, retro multicolour palette, geometric motifs | Use colours to distinguish real categories; use an illustration only when it relates to content. |
+
+These directions can be combined or replaced by a user reference. They are not a closed preset list, required palette or fixed layout. Centre short table labels and numerical entries where appropriate. Keep explanatory text left-aligned. Do not add decorative top or left accent rules.

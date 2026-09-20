@@ -17,3 +17,9 @@ The examples embed unmodified Pretendard Variable v1.3.9 from [the official repo
 ## Additional compositions
 
 Monochrome Ledger uses paired arguments and black/grey typography. Playful Geometry uses labelled shapes as the actual activity material and a large sorting region. Duotone Split compares concepts across two contrasting fields. Editorial Magazine pairs asymmetrical typography with a relevant speech-bubble illustration. These are design directions, not mandatory templates.
+
+## Six reference-informed directions
+
+Pin & Paper, Cobalt Grid, Grove, Notebook Tabs, Retro Zine and Sakura Chroma were studied through the locally available frontend-slides-editable style descriptions, template metadata and preview images. The new HTML and lesson text are original adaptations, not copied upstream templates. Worksheet paper areas, graph accuracy, response space, short-label centering and the absence of ornamental top/left accent rules take precedence over decorations in the reference.
+
+Notebook Tabs uses working section anchors in the worksheet and current-stage labels in the slide deck. Some serif headings use system fonts and may differ by operating system. The main sans-serif font remains embedded.

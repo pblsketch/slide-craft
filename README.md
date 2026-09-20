@@ -77,6 +77,72 @@ HTML 링크에서 코드가 보이면 파일 화면의 다운로드 버튼 또�
 
 [편집 가능한 HTML](examples/editorial-magazine.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/editorial-magazine.html)
 
+
+### Pin & Paper · 종이색과 잉크색, 자유로운 메모 배치
+
+노란 종이와 남색 글자의 대비를 살리고, 자료·메모·성찰을 서로 다른 크기로 배치합니다. 안전핀이나 바인더 구멍을 장식으로 반복하지 않습니다.
+
+![Pin & Paper 스타일의 실제 수업 자료](docs/images/pin-and-paper.png)
+
+> “Pin & Paper 스타일로 만들어 줘. 이 예시의 시각적 특징을 활용하되, 내용과 쓰는 공간은 내 수업에 맞게 구성해 줘.”
+
+[편집 가능한 HTML](examples/pin-and-paper.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/pin-and-paper.html)
+
+
+### Cobalt Grid · 청색 타이포그래피와 정밀한 모눈
+
+코발트색 글자와 정확한 좌표 모눈을 결합합니다. 원본의 모눈과 편집물 같은 인상은 살리되, 픽셀 장식과 강조선은 제거합니다.
+
+![Cobalt Grid 스타일의 실제 수업 자료](docs/images/cobalt-grid.png)
+
+> “Cobalt Grid 스타일로 만들어 줘. 이 예시의 시각적 특징을 활용하되, 내용과 쓰는 공간은 내 수업에 맞게 구성해 줘.”
+
+[편집 가능한 HTML](examples/cobalt-grid.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/cobalt-grid.html)
+
+
+### Grove · 숲색과 크림색, 여유 있는 명조 제목
+
+짙은 숲색과 크림색, 명조 제목의 차분한 인상을 활용합니다. 활동지는 밝은 바탕을 넓게 두고 슬라이드는 어두운 장면과 밝은 장면을 섞습니다.
+
+![Grove 스타일의 실제 수업 자료](docs/images/grove.png)
+
+> “Grove 스타일로 만들어 줘. 이 예시의 시각적 특징을 활용하되, 내용과 쓰는 공간은 내 수업에 맞게 구성해 줘.”
+
+[편집 가능한 HTML](examples/grove.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/grove.html)
+
+
+### Notebook Tabs · 색인 탭과 종이 지면
+
+색인 탭에 읽기·기록·수정 같은 실제 구역 이름을 붙이고 내용과 연결합니다. 종이색 바탕과 정돈된 칸을 쓰되 바인더 구멍은 넣지 않습니다.
+
+![Notebook Tabs 스타일의 실제 수업 자료](docs/images/notebook-tabs.png)
+
+> “Notebook Tabs 스타일로 만들어 줘. 이 예시의 시각적 특징을 활용하되, 내용과 쓰는 공간은 내 수업에 맞게 구성해 줘.”
+
+[편집 가능한 HTML](examples/notebook-tabs.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/notebook-tabs.html)
+
+
+### Retro Zine · 독립출판물 같은 글자와 지면
+
+베이지 종이색과 선명한 초록색, 크기가 다른 제목과 메모를 사용합니다. 굵은 제목·비대칭 자료 배치로 인쇄물의 개성을 살립니다.
+
+![Retro Zine 스타일의 실제 수업 자료](docs/images/retro-zine.png)
+
+> “Retro Zine 스타일로 만들어 줘. 이 예시의 시각적 특징을 활용하되, 내용과 쓰는 공간은 내 수업에 맞게 구성해 줘.”
+
+[편집 가능한 HTML](examples/retro-zine.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/retro-zine.html)
+
+
+### Sakura Chroma · 복고풍 색 조합과 기하학적 구성
+
+크림색 바탕에 분홍·주황·청색을 조합하고 짧은 라벨과 체크 항목을 배치합니다. 색 면은 자료와 구역을 구분하는 데 사용하며 장식용 강조줄은 넣지 않습니다.
+
+![Sakura Chroma 스타일의 실제 수업 자료](docs/images/sakura-chroma.png)
+
+> “Sakura Chroma 스타일로 만들어 줘. 이 예시의 시각적 특징을 활용하되, 내용과 쓰는 공간은 내 수업에 맞게 구성해 줘.”
+
+[편집 가능한 HTML](examples/sakura-chroma.html) · [HTML 바로 내려받기](https://github.com/pblsketch/slide-craft/raw/refs/heads/main/examples/sakura-chroma.html)
+
 ## 처음 사용하기
 
 ### 1. 사용하는 AI에 스킬 설치하기
@@ -200,7 +266,7 @@ PDF는 브라우저 인쇄창에서 **PDF로 저장**을 선택합니다. 색이
 
 ## 예시와 사용 범위
 
-이 저장소의 글과 도형은 예시를 위해 작성했습니다. 디자인과 지면 구성에 참고한 자료와 반영 내용은 [디자인 참고 기록](docs/design-notes.md)에 정리했습니다. 가상 광고·설문·학생 반응은 각 자료에 표시했습니다. 다른 책의 활동지나 사진을 재배포하지 않습니다. 예시 HTML에는 Pretendard 글꼴을 포함해 한글의 모양과 굵기를 유지합니다. 글꼴은 별도의 [SIL Open Font License](docs/Pretendard-OFL.txt)를 따르며, 라이선스는 각 HTML 안에도 들어 있습니다.
+이 저장소의 글과 도형은 예시를 위해 작성했습니다. 디자인과 지면 구성에 참고한 자료와 반영 내용은 [디자인 참고 기록](docs/design-notes.md)에 정리했습니다. 가상 광고·설문·학생 반응은 각 자료에 표시했습니다. 다른 책의 활동지나 사진을 재배포하지 않습니다. 예시 HTML에는 본문용 Pretendard 글꼴을 포함합니다. 일부 명조 제목은 시스템 글꼴을 사용하므로 운영체제에 따라 모양이 달라질 수 있습니다. 포함한 글꼴은 별도의 [SIL Open Font License](docs/Pretendard-OFL.txt)를 따르며, 라이선스는 각 HTML 안에도 들어 있습니다.
 
 코드, 문서, 포함된 예시는 [MIT 라이선스](LICENSE)로 공개합니다. 수정·재배포·상업적 이용이 가능하며, 재배포할 때 라이선스와 저작권 고지를 유지해 주세요. 선생님이 별도로 추가하는 글·사진은 해당 자료의 이용 조건을 따릅니다.
 

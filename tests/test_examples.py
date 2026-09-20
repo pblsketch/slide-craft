@@ -77,7 +77,7 @@ def test_example_edit_save_print(runtime, path, tmp_path):
     page.goto(f"{origin}/saved.html")
     assert page.locator("h1[data-edit],h2[data-edit]").first.inner_text() == "Edited lesson title"
     assert page.locator("[data-teach-controls]").count() == 1
-    if path.stem == "graph-paper":
+    if path.stem in {"graph-paper", "cobalt-grid"} and not slides:
         assert page.locator("math mfrac").count() == 1
         points = page.locator("svg circle[data-x]").evaluate_all(
             "els=>els.map(e=>({x:+e.dataset.x,y:+e.dataset.y,cx:+e.getAttribute('cx'),cy:+e.getAttribute('cy')}))"
@@ -91,6 +91,11 @@ def test_example_edit_save_print(runtime, path, tmp_path):
             page.locator("[data-formula-source]").get_attribute("data-formula-source")
             == "y=0.5*x+1"
         )
+    if path.stem == "notebook-tabs" and not slides:
+        page.locator("[data-cmd=mode]").click()
+        page.locator('.page-tabs a[href="#tab-3"]').click()
+        assert page.url.endswith("#tab-3")
+        page.locator("[data-cmd=mode]").click()
     if slides:
         page.locator("[data-cmd=present]").click()
         page.locator("[data-cmd=next]").click()

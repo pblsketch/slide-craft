@@ -22,3 +22,7 @@ Claude upload ZIP: one skill root, SKILL.md, relative references, bundled Python
 ## v0.3.0 gallery expansion, checked on 2026-09-20
 
 Two new examples in this repository passed browser edit, structure change, undo, HTML download/reopen, no external resource requests and PDF page checks. New worksheets print as one A4 page each; new slide examples print as three pages each. Previously published examples are unchanged and were not retested in this update. Both updated Claude ZIP helpers passed isolated extraction/execution checks.
+
+## v0.4.0 reference gallery, checked on 2026-09-20
+
+Six new examples in this repository were verified in Chrome over HTTP for editing, structure change, undo, saving/reopening, no external resource requests and PDF page counts. Across the two repositories, 12 targeted tests passed (11 prior examples deselected). The Cobalt Grid worksheet also checks formula source and calculated points. The Notebook Tabs worksheet checks navigation to the third activity; its final stage-label presentation was rechecked after the visual adjustment. Worksheets produce one A4 page each; slide decks produce three 16:9 pages each. Prior examples were preserved without rerunning the old engine suite. Claude ZIP extraction and bundled helper execution were verified.
