@@ -41,8 +41,16 @@ def test_example_edit_save_print(runtime, path, tmp_path):
     browser, origin = runtime
     page = browser.new_page(viewport={"width": 1360, "height": 980}, accept_downloads=True)
     errors = []
+    external = []
     page.on("pageerror", lambda e: errors.append(str(e)))
+    page.on(
+        "request",
+        lambda r: (
+            external.append(r.url) if not r.url.startswith((origin, "data:", "blob:")) else None
+        ),
+    )
     page.goto(f"{origin}/examples/{path.name}")
+    page.evaluate("document.fonts.ready")
     slides = page.locator("[data-slide]").count()
     title = page.locator("h1[data-edit],h2[data-edit]").first
     title.click()
@@ -69,6 +77,20 @@ def test_example_edit_save_print(runtime, path, tmp_path):
     page.goto(f"{origin}/saved.html")
     assert page.locator("h1[data-edit],h2[data-edit]").first.inner_text() == "Edited lesson title"
     assert page.locator("[data-teach-controls]").count() == 1
+    if path.stem == "graph-paper":
+        assert page.locator("math mfrac").count() == 1
+        points = page.locator("svg circle[data-x]").evaluate_all(
+            "els=>els.map(e=>({x:+e.dataset.x,y:+e.dataset.y,cx:+e.getAttribute('cx'),cy:+e.getAttribute('cy')}))"
+        )
+        assert len(points) == 3
+        for point in points:
+            assert point["y"] == 0.5 * point["x"] + 1
+            assert point["cx"] == 220 + 40 * point["x"]
+            assert point["cy"] == 220 - 40 * point["y"]
+        assert (
+            page.locator("[data-formula-source]").get_attribute("data-formula-source")
+            == "y=0.5*x+1"
+        )
     if slides:
         page.locator("[data-cmd=present]").click()
         page.locator("[data-cmd=next]").click()
@@ -78,4 +100,5 @@ def test_example_edit_save_print(runtime, path, tmp_path):
         assert len(document) == (slides or 1)
         assert "HTML 저장" not in "".join(p.get_text() for p in document)
     assert not errors
+    assert not external
     page.close()
