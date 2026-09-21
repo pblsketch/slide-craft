@@ -5,7 +5,7 @@ Run from this repository root:
 ```sh
 python -m pip install -r requirements-dev.txt
 python -m playwright install chromium
-python -m pytest tests/test_examples.py -q
+python -m pytest tests -q
 ```
 
 Tests use HTTP, not file URLs. They check every included example for text editing, table or slide structure changes, undo, HTML download, reopening, PDF page count, and browser JavaScript errors. Set CRAFT_BROWSER to an existing Chrome or Edge executable to use that browser instead.
@@ -30,3 +30,11 @@ Six new examples in this repository were verified in Chrome over HTTP for editin
 ## v0.4.1 shared editor correction, checked on 2026-09-21
 
 The empty editable-field fallback now has zero selector specificity so authored minimum heights are preserved. Shared editor integration tests: 10 passed, including empty-region edit/preview preservation and scaled slide interactions. No slide design or lesson content changed.
+
+## Offline KaTeX editing, checked on 2026-09-21
+
+The editor includes KaTeX 0.18.7, embedded WOFF2 fonts, a LaTeX editor with live preview, templates, apply/cancel, inline insertion and block equations. The bundle preserves KaTeX MIT notices and does not require a CDN, npm or Node in generated documents.
+
+Validation: 13 focused development integration tests passed, covering existing editing behaviour plus invalid-input cancellation, undo/redo, copy, inline insertion, supported math variants, blocked external resources, editor refresh and offline saved-file editing. Four existing math lesson/deck examples passed real-browser edit/save/print tests after KaTeX conversion. The shipped formula demo passed its own offline browser test in each public repository (2 tests). Screenshots and a one-page PDF containing nine rendered math examples were visually inspected. Cobalt Grid header specificity was corrected while checking the converted worksheet so the approved title-table typography is retained.
+
+The demo test is tests/test_math_editor.py. Prior non-math layout variants were not exhaustively retested in this update. The installation ZIPs were extracted and their bundled Python attachment helper executed. Generation inside the Claude service itself remains untested.

@@ -15,12 +15,18 @@ class Inspect(HTMLParser):
         self.roots = self.mains = self.fields = self.slides = 0
         self.external: list[str] = []
         self.editors: list[tuple[str, str | None]] = []
+        self.css: list[str] = []
+        self.in_style = False
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
+        if tag == "style":
+            self.in_style = True
+        if a.get("style"):
+            self.css.append(a["style"])
         self.roots += "data-teach-document" in a
         self.mains += tag == "main"
-        self.fields += "data-edit" in a
+        self.fields += "data-edit" in a or "data-math" in a
         self.slides += "data-slide" in a
         if "data-teach-freeform" in a:
             self.editors.append((tag, a["data-teach-freeform"]))
@@ -31,6 +37,27 @@ class Inspect(HTMLParser):
             value = a.get(key) or ""
             if value and not value.startswith(("data:", "#")):
                 self.external.append(f"{tag}.{key}: {value[:100]}")
+
+    def handle_data(self, data):
+        if self.in_style:
+            self.css.append(data)
+
+    def handle_endtag(self, tag):
+        if tag == "style":
+            self.in_style = False
+
+
+def math_assets():
+    folder = Path(__file__).resolve().parent
+    if not (folder / "math-editor.js").is_file():
+        folder = folder.parent / "assets/freeform"
+    css = "\n".join(
+        (folder / name).read_text(encoding="utf-8") for name in ["katex.css", "math-editor.css"]
+    )
+    js = "\n".join(
+        (folder / name).read_text(encoding="utf-8") for name in ["katex.js", "math-editor.js"]
+    )
+    return css, js
 
 
 def attach(
@@ -44,7 +71,9 @@ def attach(
         raise ValueError("수정할 글이나 표의 셀에 data-edit를 붙이세요.")
     if kind == "slides" and not parser.slides:
         raise ValueError("각 슬라이드 컨테이너에 data-slide를 붙이세요.")
-    if parser.external or re.search(r"@import\s|url\(\s*['\"]?(?!data:|#)[^\s'\")]+", source, re.I):
+    if parser.external or re.search(
+        r"@import\s|url\(\s*['\"]?(?!data:|#)[^\s'\")]+", "\n".join(parser.css), re.I
+    ):
         raise ValueError(
             "이미지·스타일 등의 외부/상대 파일 참조를 HTML 안에 포함하세요: "
             + "; ".join(parser.external)
@@ -77,6 +106,9 @@ def attach(
         return tag[:-1] + config + ">"
 
     source = re.sub(r"<body\b[^>]*>", body_config, source, count=1, flags=re.I)
+    math_css, math_js = math_assets()
+    css = math_css + "\n" + css
+    js = math_js + "\n" + js
     source = re.sub(
         r"</head\s*>",
         lambda _: '<style data-teach-freeform="style">\n' + css + "\n</style></head>",

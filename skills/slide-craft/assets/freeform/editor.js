@@ -15,7 +15,7 @@
   ui.setAttribute('aria-label', '문서 편집 도구');
   const button = (cmd, label, extra = '') => `<button type="button" data-cmd="${cmd}" ${extra}>${label}</button>`;
   ui.innerHTML = `<div class="teach-bar"><span data-label>수업자료 편집 <small data-state>변경 없음</small></span>
-    <details><summary>＋ 추가</summary><div>${button('text','글상자')}${button('answer','답란')}${button('table','표')}${button('image','이미지')}</div></details>
+    <details><summary>＋ 추가</summary><div>${button('text','글상자')}${button('answer','답란')}${button('table','표')}${button('image','이미지')}${button('math','수식')}</div></details>
     ${button('undo','↶','aria-label="되돌리기" title="되돌리기 (Ctrl+Z)"')}${button('redo','↷','aria-label="다시 하기" title="다시 하기 (Ctrl+Shift+Z)"')}
     ${button('mode','미리보기')}${slides ? button('present','발표 보기') + button('prev','←','aria-label="이전 장"') + '<span data-counter></span>' + button('next','→','aria-label="다음 장"') : ''}
     ${button('print','인쇄 / PDF')}${button('save','HTML 저장')}</div>
@@ -43,6 +43,7 @@
         <label>괘선 수<input data-prop="answer-lines" type="number" min="0" max="30" step="1"></label>
         <label>줄 간격 <span>mm</span><input data-prop="answer-pitch" type="number" min="4" max="15" step="0.1"></label>
       </fieldset>
+      <fieldset data-tools="math"><legend>수식</legend>${button('edit-math','수식 수정')}<small>LaTeX 원문과 미리보기</small></fieldset>
       <fieldset data-tools="piece"><legend>선택 영역</legend>${button('copy','복제')}${button('up','위로')}${button('down','아래로')}${button('delete','삭제','class="teach-danger"')}
         ${slides ? '<label>너비 <span>px</span><input data-prop="piece-width" type="number" min="24" max="4096"></label><label>높이 <span>px</span><input data-prop="piece-height" type="number" min="24" max="4096"></label><small>화면 손잡이로 이동·크기 조절</small>' : ''}
       </fieldset>
@@ -63,7 +64,8 @@
   const valid = el => el?.isConnected && root.contains(el);
   const hasContent = el => !!el.textContent.trim() || !!el.querySelector('img,svg,input,textarea,select');
   const merged = table => !!table?.querySelector('[rowspan]:not([rowspan="1"]),[colspan]:not([colspan="1"]),col[span]:not([span="1"])');
-  function prepare() { all('[data-edit]').forEach(e => e.contentEditable = String(editable)); }
+  const mathEditor=window.__teachCreateMathEditor?.({root,editable:()=>editable,change,insert,choose,valid,say});
+  function prepare() { all('[data-edit]').forEach(e => e.contentEditable = String(editable));mathEditor?.prepare(); }
   function scale(el) {
     const box = el.getBoundingClientRect();
     return {x: box.width / (el.offsetWidth || box.width || 1) || 1, y: box.height / (el.offsetHeight || box.height || 1) || 1};
@@ -81,8 +83,8 @@
     ui.querySelector('[data-cmd=inspector]').hidden = !on;
     pieceActions.hidden=!on;
     ui.querySelector('[data-cmd=inspector]').textContent = '도구 접기';
-    ui.querySelector('[data-selection]').textContent = !editable ? '미리보기 중 · 편집하기를 누르면 다시 수정할 수 있습니다.' : !on ? '글·표·이미지·답란을 누르면 편집 도구가 나타납니다.' : `${ctx.answer ? '답란' : ctx.cell ? '표의 셀' : ctx.image ? '이미지' : ctx.text ? '글' : '영역'} 선택됨`;
-    const tools = {text:ctx.text,table:ctx.table,image:ctx.image,answer:ctx.answer,piece:ctx.piece};
+    ui.querySelector('[data-selection]').textContent = !editable ? '미리보기 중 · 편집하기를 누르면 다시 수정할 수 있습니다.' : !on ? '글·표·이미지·답란·수식을 누르면 편집 도구가 나타납니다.' : `${ctx.math ? '수식' : ctx.answer ? '답란' : ctx.cell ? '표의 셀' : ctx.image ? '이미지' : ctx.text ? '글' : '영역'} 선택됨`;
+    const tools = {text:ctx.text,table:ctx.table,image:ctx.image,answer:ctx.answer,piece:ctx.piece,math:ctx.math};
     Object.entries(tools).forEach(([key, el]) => ui.querySelector(`[data-tools=${key}]`).hidden = !(on && valid(el)));
     if(!slides)ui.querySelector('[data-tools=piece]').hidden=true;
     if (valid(ctx.text)) {
@@ -119,8 +121,9 @@
   function choose(anchor) {
     all('.teach-selected').forEach(el=>el.classList.remove('teach-selected'));
     if(!valid(anchor)||!editable){ctx={};syncInspector();return;}
-    const piece=anchor.closest('[data-piece]')||anchor.closest('[data-edit]')||anchor.closest('figure,table');
-    ctx={anchor,piece,text:anchor.closest('[data-edit]'),cell:anchor.closest('td,th')};
+    const math=anchor.closest('[data-math]');
+    const piece=math||anchor.closest('[data-piece]')||anchor.closest('[data-edit]')||anchor.closest('figure,table');
+    ctx={anchor,piece,math,text:math?null:anchor.closest('[data-edit]'),cell:anchor.closest('td,th')};
     ctx.table=ctx.cell?.closest('table')||(piece?.matches('table')?piece:piece?.querySelector('table'));
     ctx.image=anchor.closest('img')||(piece?.matches('img')?piece:piece?.querySelector('img'));
     ctx.answer=anchor.closest('[data-answer-space]');
@@ -134,7 +137,7 @@
     [clone,...all('.teach-selected',clone)].forEach(e=>e.classList.remove('teach-selected'));
     all('[data-edit]',clone).forEach(e=>e.removeAttribute('contenteditable'));
     all('[data-slide]',clone).forEach(e=>e.removeAttribute('hidden'));
-    all('[data-teach-controls],[data-teach-overlay]',clone).forEach(e=>e.remove());
+    all('[data-teach-controls],[data-teach-overlay],[data-teach-math-ui]',clone).forEach(e=>e.remove());
     return clone;
   }
   const snapshot=()=>cleanCopy(root).innerHTML;
@@ -204,6 +207,7 @@
     if(cmd==='prev'||cmd==='next'){current+=cmd==='next'?1:-1;choose(null);refresh();if(!presenting)active()?.scrollIntoView({block:'start'});return;}
     if(!editable)return say('편집하기를 켠 뒤 수정하세요.');
     ui.querySelector('details').open=false;
+    if(cmd==='math'||cmd==='edit-math'){if(mathEditor)mathEditor.open(cmd==='edit-math'?ctx.math:null,lastRange);else say('수식 기능을 사용하려면 편집기를 갱신하세요.');return;}
     if(['bold','italic','underline'].includes(cmd)){if(!valid(ctx.text))return;change(()=>{if(lastRange&&!lastRange.collapsed&&lastRange.startContainer.isConnected&&lastRange.endContainer.isConnected){const s=getSelection();s.removeAllRanges();s.addRange(lastRange);doc.execCommand(cmd);}else{const style=getComputedStyle(ctx.text),key={bold:'fontWeight',italic:'fontStyle',underline:'textDecoration'}[cmd];ctx.text.style[key]=cmd==='bold'?(+style.fontWeight>=600?'400':'700'):cmd==='italic'?(style.fontStyle==='italic'?'normal':'italic'):(style.textDecorationLine.includes('underline')?'none':'underline');}});return;}
     if(cmd==='image'||cmd==='replace-image')return loadImage(cmd==='replace-image');
     if(cmd==='text'||cmd==='answer'||cmd==='table')return change(()=>{let node;if(cmd==='table'){node=doc.createElement('section');node.dataset.piece='';node.innerHTML='<table style="width:100%;border-collapse:collapse"><thead><tr><th data-edit style="border:1px solid #b8c9bf;padding:8px">항목</th><th data-edit style="border:1px solid #b8c9bf;padding:8px">내용</th></tr></thead><tbody><tr><td data-edit style="border:1px solid #b8c9bf;padding:8px"><br></td><td data-edit style="border:1px solid #b8c9bf;padding:8px"><br></td></tr></tbody></table>';}else{node=doc.createElement('div');node.dataset.piece='';node.dataset.edit='';if(cmd==='answer'){node.dataset.answerSpace='';Object.assign(node.style,{minHeight:'32mm',border:'1px solid #b8c9bf',padding:'8px',boxSizing:'border-box'});}else node.textContent='새 질문이나 설명을 입력하세요.';}return insert(node);});
@@ -218,7 +222,7 @@
     if(e.key==='Escape'){cancelGesture();ui.querySelector('details').open=false;}
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='s'){e.preventDefault();save();}
     if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='a'&&e.target.closest('[data-edit]')){e.preventDefault();const r=doc.createRange();r.selectNodeContents(e.target.closest('[data-edit]'));const s=getSelection();s.removeAllRanges();s.addRange(r);}
-    const editingControl=ui.contains(e.target)&&e.target.matches('input,textarea,select');
+    const editingControl=(ui.contains(e.target)||mathEditor?.contains(e.target))&&e.target.matches('input,textarea,select');
     if((e.ctrlKey||e.metaKey)&&!editingControl&&['z','y'].includes(e.key.toLowerCase())){e.preventDefault();restore(e.shiftKey||e.key.toLowerCase()==='y'?1:-1);}
     if(presenting&&!e.target.closest('input,textarea,[contenteditable=true]')&&['ArrowLeft','ArrowRight'].includes(e.key)){current+=e.key==='ArrowRight'?1:-1;refresh();}
   });
