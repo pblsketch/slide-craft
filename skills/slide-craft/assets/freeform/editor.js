@@ -15,7 +15,7 @@
   ui.setAttribute('aria-label', '문서 편집 도구');
   const button = (cmd, label, extra = '') => `<button type="button" data-cmd="${cmd}" ${extra}>${label}</button>`;
   ui.innerHTML = `<div class="teach-bar"><span data-label>수업자료 편집 <small data-state>변경 없음</small></span>
-    <details><summary>＋ 추가</summary><div>${button('text','글상자')}${button('answer','답란')}${button('table','표')}${button('image','이미지')}${button('math','수식')}</div></details>
+    <details><summary>＋ 추가</summary><div>${button('text','글상자')}${button('answer','답란')}${button('table','표')}${button('image','이미지')}${button('math','수식')}${button('function-graph','함수 그래프')}${button('data-chart','데이터 그래프')}</div></details>
     ${button('undo','↶','aria-label="되돌리기" title="되돌리기 (Ctrl+Z)"')}${button('redo','↷','aria-label="다시 하기" title="다시 하기 (Ctrl+Shift+Z)"')}
     ${button('mode','미리보기')}${slides ? button('present','발표 보기') + button('prev','←','aria-label="이전 장"') + '<span data-counter></span>' + button('next','→','aria-label="다음 장"') : ''}
     ${button('print','인쇄 / PDF')}${button('save','HTML 저장')}</div>
@@ -44,6 +44,7 @@
         <label>줄 간격 <span>mm</span><input data-prop="answer-pitch" type="number" min="4" max="15" step="0.1"></label>
       </fieldset>
       <fieldset data-tools="math"><legend>수식</legend>${button('edit-math','수식 수정')}<small>LaTeX 원문과 미리보기</small></fieldset>
+      <fieldset data-tools="chart"><legend>연결 그래프</legend><label>종류<select data-prop="chart-type"><option value="bar">막대</option><option value="line">꺾은선</option></select></label><label>x축 이름<input data-prop="chart-x-label" type="text"></label><label>y축 이름<input data-prop="chart-y-label" type="text"></label></fieldset>
       <fieldset data-tools="piece"><legend>선택 영역</legend>${button('copy','복제')}${button('up','위로')}${button('down','아래로')}${button('delete','삭제','class="teach-danger"')}
         ${slides ? '<label>너비 <span>px</span><input data-prop="piece-width" type="number" min="24" max="4096"></label><label>높이 <span>px</span><input data-prop="piece-height" type="number" min="24" max="4096"></label><small>화면 손잡이로 이동·크기 조절</small>' : ''}
       </fieldset>
@@ -65,7 +66,7 @@
   const hasContent = el => !!el.textContent.trim() || !!el.querySelector('img,svg,input,textarea,select');
   const merged = table => !!table?.querySelector('[rowspan]:not([rowspan="1"]),[colspan]:not([colspan="1"]),col[span]:not([span="1"])');
   const mathEditor=window.__teachCreateMathEditor?.({root,editable:()=>editable,change,insert,choose,valid,say});
-  function prepare() { all('[data-edit]').forEach(e => e.contentEditable = String(editable));mathEditor?.prepare(); }
+  function prepare() { all('[data-edit]').forEach(e => e.contentEditable = String(editable));mathEditor?.prepare();window.__teachGraphs?.prepare(root); }
   function scale(el) {
     const box = el.getBoundingClientRect();
     return {x: box.width / (el.offsetWidth || box.width || 1) || 1, y: box.height / (el.offsetHeight || box.height || 1) || 1};
@@ -84,7 +85,7 @@
     pieceActions.hidden=!on;
     ui.querySelector('[data-cmd=inspector]').textContent = '도구 접기';
     ui.querySelector('[data-selection]').textContent = !editable ? '미리보기 중 · 편집하기를 누르면 다시 수정할 수 있습니다.' : !on ? '글·표·이미지·답란·수식을 누르면 편집 도구가 나타납니다.' : `${ctx.math ? '수식' : ctx.answer ? '답란' : ctx.cell ? '표의 셀' : ctx.image ? '이미지' : ctx.text ? '글' : '영역'} 선택됨`;
-    const tools = {text:ctx.text,table:ctx.table,image:ctx.image,answer:ctx.answer,piece:ctx.piece,math:ctx.math};
+    const tools = {text:ctx.text,table:ctx.table,image:ctx.image,answer:ctx.answer,piece:ctx.piece,math:ctx.math,chart:ctx.chart};
     Object.entries(tools).forEach(([key, el]) => ui.querySelector(`[data-tools=${key}]`).hidden = !(on && valid(el)));
     if(!slides)ui.querySelector('[data-tools=piece]').hidden=true;
     if (valid(ctx.text)) {
@@ -110,6 +111,7 @@
       ui.querySelector('[data-table-note]').textContent=locked?'병합 표는 내용·서식 편집만 가능합니다.':'';
     }
     if(valid(ctx.image)){field('image-width').value=Math.round(ctx.image.offsetWidth);field('image-alt').value=ctx.image.alt;}
+    if(valid(ctx.chart)){field('chart-type').value=ctx.chart.dataset.chartType||'bar';field('chart-x-label').value=ctx.chart.dataset.chartXLabel||'';field('chart-y-label').value=ctx.chart.dataset.chartYLabel||'';}
     if(valid(ctx.answer)) {
       field('answer-height').value=Math.round(ctx.answer.offsetHeight/mm*10)/10;
       field('answer-lines').value=ctx.answer.dataset.answerLines||0;
@@ -122,11 +124,12 @@
     all('.teach-selected').forEach(el=>el.classList.remove('teach-selected'));
     if(!valid(anchor)||!editable){ctx={};syncInspector();return;}
     const math=anchor.closest('[data-math]');
-    const piece=math||anchor.closest('[data-piece]')||anchor.closest('[data-edit]')||anchor.closest('figure,table');
+    const piece=math?.closest('[data-function-graph]')||math||anchor.closest('[data-piece]')||anchor.closest('[data-edit]')||anchor.closest('figure,table');
     ctx={anchor,piece,math,text:math?null:anchor.closest('[data-edit]'),cell:anchor.closest('td,th')};
     ctx.table=ctx.cell?.closest('table')||(piece?.matches('table')?piece:piece?.querySelector('table'));
     ctx.image=anchor.closest('img')||(piece?.matches('img')?piece:piece?.querySelector('img'));
     ctx.answer=anchor.closest('[data-answer-space]');
+    ctx.chart=anchor.closest('[data-data-chart]');
     if(piece)piece.classList.add('teach-selected');
     const frame=anchor.closest('[data-slide]');if(frame)current=frames().indexOf(frame);
     syncInspector();updateNavigation();
@@ -159,7 +162,7 @@
   function change(fn){checkpoint();const anchor=ctx.anchor;const next=fn();refresh();choose(next instanceof Element?next:anchor);checkpoint();say('변경했습니다. HTML 저장으로 보관하세요.');reportBounds();}
   function restore(delta){if(gesture){cancelGesture();return;}if(delta<0)checkpoint();const at=cursor+delta;if(at<0||at>=history.length)return;cursor=at;root.innerHTML=history[cursor];ctx={};lastRange=null;refresh();checkpoint();say(delta<0?'이전 상태로 되돌렸습니다.':'변경을 다시 적용했습니다.');}
   function clonePiece(el){const copy=el.cloneNode(true),ids=new Map(),prefix='copy-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,6);[copy,...all('[id]',copy)].forEach((n,i)=>{if(n.id){const old=n.id;ids.set(old,`${prefix}-${i}`);n.id=ids.get(old);}});[copy,...all('*',copy)].forEach(n=>{n.classList.remove('teach-selected');[...n.attributes].forEach(a=>{let v=a.value;if(['for','aria-labelledby','aria-describedby'].includes(a.name))v=v.split(' ').map(x=>ids.get(x)||x).join(' ');if(['href','xlink:href'].includes(a.name)&&v.startsWith('#')&&ids.has(v.slice(1)))v='#'+ids.get(v.slice(1));v=v.replace(/url\(#([^)]+)\)/g,(m,id)=>ids.has(id)?`url(#${ids.get(id)})`:m);if(v!==a.value)n.setAttribute(a.name,v);});});return copy;}
-  function save(){const html='<!doctype html>\n'+cleanCopy(doc.documentElement).outerHTML,url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'})),a=doc.createElement('a');a.href=url;a.download=doc.body.dataset.teachFilename||'편집한_자료.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);saved=snapshot();checkpoint();ui.querySelector('[data-state]').textContent='다운로드 요청됨';say('현재 내용의 HTML 다운로드를 시작했습니다. 내려받은 파일을 확인하세요.');}
+  function save(){if(window.__teachGraphs&&!window.__teachGraphs.prepare(root))return say('연결된 그래프의 수식이나 표 값을 확인한 뒤 저장하세요.');const html='<!doctype html>\n'+cleanCopy(doc.documentElement).outerHTML,url=URL.createObjectURL(new Blob([html],{type:'text/html;charset=utf-8'})),a=doc.createElement('a');a.href=url;a.download=doc.body.dataset.teachFilename||'편집한_자료.html';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);saved=snapshot();checkpoint();ui.querySelector('[data-state]').textContent='다운로드 요청됨';say('현재 내용의 HTML 다운로드를 시작했습니다. 내려받은 파일을 확인하세요.');}
   function insert(node){const anchor=ctx.piece;if(valid(anchor)&&anchor!==active())anchor.after(node);else active().append(node);return node.matches('[data-edit]')?node:node.querySelector('[data-edit]')||node;}
   function loadImage(replace){const existing=replace?ctx.image:null,destination=ctx.piece,input=doc.createElement('input');input.type='file';input.accept='image/png,image/jpeg,image/webp,image/gif';input.onchange=()=>{const file=input.files[0];if(!file)return;const reader=new FileReader();reader.onerror=()=>say('이미지를 읽지 못했습니다. 다른 파일로 다시 시도하세요.');reader.onload=()=>change(()=>{if(valid(existing)){existing.src=reader.result;return existing;}const figure=doc.createElement('figure');figure.dataset.piece='';const img=doc.createElement('img');img.src=reader.result;img.alt='추가한 이미지';img.style.maxWidth='100%';img.style.height='auto';const caption=doc.createElement('figcaption');caption.dataset.edit='';caption.textContent='이미지 설명';figure.append(img,caption);if(valid(destination)&&destination!==active())destination.after(figure);else active().append(figure);return img;});reader.readAsDataURL(file);};input.click();}
   function tableOperation(cmd){const table=ctx.table,cell=ctx.cell;if(!valid(table))return say('표 안의 셀을 먼저 누르세요.');if(merged(table))return say('병합된 셀을 보존하기 위해 이 표의 행·열 변경은 지원하지 않습니다.');
@@ -185,7 +188,7 @@
   overlay.addEventListener('pointercancel',cancelGesture);
   overlay.addEventListener('keydown',e=>{const mode=e.target.dataset.drag;if(!mode||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.shiftKey?10:1,x=e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0,y=e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0;change(()=>{const el=ctx.piece;if(mode==='move')translate(el,splitTranslate(getComputedStyle(el).translate),x,y);else resizePiece(el,el.offsetWidth+x,el.offsetHeight+y);});});
   root.addEventListener('click',e=>{ui.querySelector('details').open=false;if(!gesture)choose(e.target);});
-  root.addEventListener('input',()=>{clearTimeout(timer);timer=setTimeout(checkpoint,250);say('편집 중 · HTML 저장으로 보관하세요.');drawOverlay();});
+  root.addEventListener('input',()=>{window.__teachGraphs?.prepare(root);clearTimeout(timer);timer=setTimeout(checkpoint,250);say('편집 중 · HTML 저장으로 보관하세요.');drawOverlay();});
   root.addEventListener('paste',e=>{if(e.target.closest('[data-edit]')){e.preventDefault();doc.execCommand('insertText',false,e.clipboardData.getData('text/plain'));}});
   doc.addEventListener('selectionchange',()=>{const s=getSelection();if(s.rangeCount&&root.contains(s.getRangeAt(0).commonAncestorContainer))lastRange=s.getRangeAt(0).cloneRange();});
   ui.addEventListener('mousedown',e=>{if(e.target.closest('[data-cmd=bold],[data-cmd=italic],[data-cmd=underline]'))e.preventDefault();});
@@ -195,19 +198,23 @@
       else if(name==='row-height'&&ctx.cell)ctx.cell.parentElement.style.height=value+'mm';
       else if(name==='image-width'&&valid(ctx.image))Object.assign(ctx.image.style,{width:value+'px',height:'auto',maxWidth:'100%'});
       else if(name==='image-alt'&&valid(ctx.image))ctx.image.alt=value;
+      else if(name==='chart-type'&&valid(ctx.chart))ctx.chart.dataset.chartType=value;
+      else if(name==='chart-x-label'&&valid(ctx.chart))ctx.chart.dataset.chartXLabel=value;
+      else if(name==='chart-y-label'&&valid(ctx.chart))ctx.chart.dataset.chartYLabel=value;
       else if(name==='answer-height'&&valid(ctx.answer))Object.assign(ctx.answer.style,{minHeight:value+'mm',height:'auto',boxSizing:'border-box',overflow:'visible'});
       else if(['answer-lines','answer-pitch'].includes(name))answerLines();
       else if(['piece-width','piece-height'].includes(name)&&valid(ctx.piece))resizePiece(ctx.piece,+field('piece-width').value,+field('piece-height').value);
     });
   });
   ui.addEventListener('click',e=>{const cmd=e.target.closest('[data-cmd]')?.dataset.cmd;if(!cmd)return;
-    if(cmd==='save')return save();if(cmd==='print')return print();if(cmd==='undo'||cmd==='redo')return restore(cmd==='undo'?-1:1);
+    if(cmd==='save')return save();if(cmd==='print'){if(window.__teachGraphs&&!window.__teachGraphs.prepare(root))return say('연결된 그래프의 값을 확인한 뒤 인쇄하세요.');return print();}if(cmd==='undo'||cmd==='redo')return restore(cmd==='undo'?-1:1);
     if(cmd==='inspector'){const panel=ui.querySelector('.teach-inspector');panel.hidden=!panel.hidden;e.target.textContent=panel.hidden?'도구 펼치기':'도구 접기';return;}
     if(cmd==='mode'||cmd==='present'){cancelGesture();editable=cmd==='mode'?!editable:presenting;presenting=cmd==='present'?!presenting:false;choose(null);ui.querySelector('[data-cmd=mode]').textContent=editable?'미리보기':'편집하기';if(slides)ui.querySelector('[data-cmd=present]').textContent=presenting?'발표 끝내기':'발표 보기';refresh();return;}
     if(cmd==='prev'||cmd==='next'){current+=cmd==='next'?1:-1;choose(null);refresh();if(!presenting)active()?.scrollIntoView({block:'start'});return;}
     if(!editable)return say('편집하기를 켠 뒤 수정하세요.');
     ui.querySelector('details').open=false;
-    if(cmd==='math'||cmd==='edit-math'){if(mathEditor)mathEditor.open(cmd==='edit-math'?ctx.math:null,lastRange);else say('수식 기능을 사용하려면 편집기를 갱신하세요.');return;}
+    if(cmd==='math'||cmd==='edit-math'||cmd==='function-graph'){if(mathEditor)mathEditor.open(cmd==='edit-math'?ctx.math:null,lastRange,cmd==='function-graph');else say('수식 기능을 사용하려면 편집기를 갱신하세요.');return;}
+    if(cmd==='data-chart')return change(()=>{const group=doc.createElement('section');group.dataset.piece='';group.dataset.dataChart='';group.dataset.chartType='bar';group.innerHTML='<table data-chart-table style="width:100%;border-collapse:collapse"><thead><tr><th data-edit>항목</th><th data-edit>값</th></tr></thead><tbody><tr><td data-edit>A</td><td data-edit>2</td></tr><tr><td data-edit>B</td><td data-edit>4</td></tr><tr><td data-edit>C</td><td data-edit>3</td></tr></tbody></table>';return insert(group);});
     if(['bold','italic','underline'].includes(cmd)){if(!valid(ctx.text))return;change(()=>{if(lastRange&&!lastRange.collapsed&&lastRange.startContainer.isConnected&&lastRange.endContainer.isConnected){const s=getSelection();s.removeAllRanges();s.addRange(lastRange);doc.execCommand(cmd);}else{const style=getComputedStyle(ctx.text),key={bold:'fontWeight',italic:'fontStyle',underline:'textDecoration'}[cmd];ctx.text.style[key]=cmd==='bold'?(+style.fontWeight>=600?'400':'700'):cmd==='italic'?(style.fontStyle==='italic'?'normal':'italic'):(style.textDecorationLine.includes('underline')?'none':'underline');}});return;}
     if(cmd==='image'||cmd==='replace-image')return loadImage(cmd==='replace-image');
     if(cmd==='text'||cmd==='answer'||cmd==='table')return change(()=>{let node;if(cmd==='table'){node=doc.createElement('section');node.dataset.piece='';node.innerHTML='<table style="width:100%;border-collapse:collapse"><thead><tr><th data-edit style="border:1px solid #b8c9bf;padding:8px">항목</th><th data-edit style="border:1px solid #b8c9bf;padding:8px">내용</th></tr></thead><tbody><tr><td data-edit style="border:1px solid #b8c9bf;padding:8px"><br></td><td data-edit style="border:1px solid #b8c9bf;padding:8px"><br></td></tr></tbody></table>';}else{node=doc.createElement('div');node.dataset.piece='';node.dataset.edit='';if(cmd==='answer'){node.dataset.answerSpace='';Object.assign(node.style,{minHeight:'32mm',border:'1px solid #b8c9bf',padding:'8px',boxSizing:'border-box'});}else node.textContent='새 질문이나 설명을 입력하세요.';}return insert(node);});
@@ -227,6 +234,6 @@
     if(presenting&&!e.target.closest('input,textarea,[contenteditable=true]')&&['ArrowLeft','ArrowRight'].includes(e.key)){current+=e.key==='ArrowRight'?1:-1;refresh();}
   });
   addEventListener('scroll',drawOverlay,true);addEventListener('resize',drawOverlay);
-  addEventListener('beforeprint',()=>{cancelGesture();all('[data-slide]').forEach(e=>e.hidden=false);doc.activeElement?.blur();});addEventListener('afterprint',refresh);
+  addEventListener('beforeprint',()=>{cancelGesture();window.__teachGraphs?.prepare(root);all('[data-slide]').forEach(e=>e.hidden=false);doc.activeElement?.blur();});addEventListener('afterprint',refresh);
   refresh();saved=snapshot();checkpoint();window.__teachFreeform={save};
 })();

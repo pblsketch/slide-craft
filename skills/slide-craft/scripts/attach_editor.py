@@ -52,10 +52,12 @@ def math_assets():
     if not (folder / "math-editor.js").is_file():
         folder = folder.parent / "assets/freeform"
     css = "\n".join(
-        (folder / name).read_text(encoding="utf-8") for name in ["katex.css", "math-editor.css"]
+        (folder / name).read_text(encoding="utf-8")
+        for name in ["katex.css", "math-editor.css", "linked-graphs.css"]
     )
     js = "\n".join(
-        (folder / name).read_text(encoding="utf-8") for name in ["katex.js", "math-editor.js"]
+        (folder / name).read_text(encoding="utf-8")
+        for name in ["katex.js", "linked-graphs.js", "math-editor.js"]
     )
     return css, js
 

@@ -1,0 +1,19 @@
+[data-function-graph],[data-data-chart]{display:block;break-inside:avoid}
+[data-graph-canvas]{display:block;max-width:100%}[data-graph-canvas] svg{display:block;max-width:100%}
+[data-graph-status]{display:block;font-size:12px;color:#587267;margin:4px 0}
+[data-graph-invalid] > [data-graph-status]{color:#a23e32}
+.teach-function-panel{border:1px solid #d2dfd7;border-radius:7px;padding:12px;margin:12px 0}.teach-function-panel[hidden]{display:none}
+.teach-function-ranges{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.teach-function-ranges label{display:grid;gap:4px;font-size:12px}.teach-function-ranges input{width:100%;box-sizing:border-box;border:1px solid #bdcec4;border-radius:5px;padding:6px}
+.teach-function-param{display:flex;align-items:center;gap:10px;margin:8px 0}.teach-function-param[hidden]{display:none}.teach-function-param input[type=range]{flex:1;min-width:60px}.teach-function-param input[type=number]{width:75px;padding:5px;border:1px solid #bdcec4;border-radius:4px}
+.teach-function-preview svg{display:block;max-height:260px;width:100%}.teach-function-help{font-size:11px;color:#62786e}
+.teach-math-dialog:has([data-function-enabled]:checked){width:min(1000px,calc(100vw - 32px))}
+.teach-math-dialog:has([data-function-enabled]:checked) textarea{min-height:70px;height:85px}
+.teach-math-dialog:has([data-function-enabled]:checked) .teach-math-preview{min-height:48px;padding:10px}
+.teach-function-panel:not([hidden]){display:grid;grid-template-columns:1fr 1.3fr;gap:5px 16px}
+.teach-function-panel .teach-function-ranges{grid-column:1;grid-template-columns:1fr 1fr}
+.teach-function-panel .teach-function-param,.teach-function-panel .teach-function-help{grid-column:1}
+.teach-function-panel .teach-function-preview{grid-column:2;grid-row:1/span 6;align-self:center}
+.teach-function-panel [data-function-values]{grid-column:2;font-size:12px;margin:0}
+@media(max-width:550px){.teach-function-ranges{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.teach-function-panel:not([hidden]){display:block}.teach-function-panel .teach-function-preview{margin-top:12px}}
+@media print{[data-graph-invalid] > [data-graph-canvas]{display:none!important}}
